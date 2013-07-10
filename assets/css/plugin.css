@@ -1,0 +1,26 @@
+#post-image-inside {
+    padding: 20px;
+}
+#post-image-preview {
+    position: relative;
+    width: 158px; height: 96px;
+    margin-bottom: 10px;
+    border: solid 4px #cccccc;
+}
+#post-image-preview img {
+}
+#delete-post-image {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 20px;
+    height: 20px;
+    background: url(../img/post-image-delete.png);
+}
+#post-image-undo {
+    margin-bottom: 10px;
+}
+
+.hidden {
+    display: none;
+}
