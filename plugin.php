@@ -13,6 +13,7 @@ define('PLEX_PLUGIN_DIR', plugin_dir_url(__FILE__));
 $uploadDir = wp_upload_dir();
 define('PLEX_UPLOAD_DIR', $uploadDir['basedir']."/post-images");
 define('PLEX_UPLOAD_URL', $uploadDir['baseurl']."/post-images");
+define('PLEX_UPLOAD_TEMP_DIR', $uploadDir['basedir']."/post-images_temp");
 
 
 
@@ -118,6 +119,11 @@ function getImageExtension( $type )
 add_action('post_edit_form_tag', 'func_edit_form');
 function func_edit_form() {
     echo 'enctype="multipart/form-data"';
+    if( !is_dir(PLEX_UPLOAD_TEMP_DIR) ){
+        mkdir(PLEX_UPLOAD_TEMP_DIR, 0775);
+    }
+
+
 }
 
 
@@ -163,6 +169,8 @@ function func_post_publish($postId) {
 
         $resizeResult = resizePostImage($imageFile, PLEX_UPLOAD_DIR, $newImageName, 330, 200); // 158x96
 
+
+
         if ( $resizeResult ) {
             if ( get_post_meta($postId, 'post_image', true) === null ) {
                 add_post_meta($postId, 'post_image', $newImageName);
@@ -176,6 +184,7 @@ function func_post_publish($postId) {
             func_delete($postId);
         }
     }
+
 }
 
 add_action('before_delete_post', 'func_delete');
