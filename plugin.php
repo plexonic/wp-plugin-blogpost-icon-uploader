@@ -13,7 +13,6 @@ define('PLEX_PLUGIN_DIR', plugin_dir_url(__FILE__));
 $uploadDir = wp_upload_dir();
 define('PLEX_UPLOAD_DIR', $uploadDir['basedir']."/post-images");
 define('PLEX_UPLOAD_URL', $uploadDir['baseurl']."/post-images");
-define('PLEX_UPLOAD_TEMP_DIR', $uploadDir['basedir']."/post-images_temp");
 
 
 
@@ -119,19 +118,16 @@ function getImageExtension( $type )
 add_action('post_edit_form_tag', 'func_edit_form');
 function func_edit_form() {
     echo 'enctype="multipart/form-data"';
-    if( !is_dir(PLEX_UPLOAD_TEMP_DIR) ){
-        mkdir(PLEX_UPLOAD_TEMP_DIR, 0775);
-    }
-
-
 }
 
 
 add_action('edit_form_advanced', 'func_add_icon_admin');
 function func_add_icon_admin($post){
+
     $postImageName = get_post_meta($post->ID, 'post_image', true);
 ?>
     <link rel="stylesheet" type="text/css" href="<?php echo PLEX_PLUGIN_DIR ?>assets/css/plugin.css" />
+
     <div id="post-image-sortables" class="meta-box-sortables ui-sortable">
         <div class="postbox">
             <div class="handlediv" title="Click to toggle"><br></div>
@@ -143,17 +139,57 @@ function func_add_icon_admin($post){
                     <a id="delete-post-image" href="#delete-post-image"></a>
                     <img src="<?php echo PLEX_UPLOAD_URL.'/'.$postImageName; ?>" width="158" />
                 </div>
+
+
+
                 <div id="post-image-undo" class="hidden">
                     <a id="post-image-undo-link" href="#">Undo delete</a>
                 </div>
                 <?php endif; ?>
-
+                <div id="imagePreviewContainer"></div>
                 <input id="delete-image-flag" type="hidden" name="delete_image" />
-                <input name="upload_image" type="file" value="<?php echo $postImageName ?>" />
+                <input id="file_upload" name="file_upload" type="file" value="<?php echo $postImageName ?>" />
+                <div id="queue"></div>
             </div>
         </div>
     </div>
+
     <script type="text/javascript" src="<?php echo PLEX_PLUGIN_DIR ?>assets/js/plugin.js"></script>
+
+
+
+
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script src="<?php echo PLEX_PLUGIN_DIR ?>assets/js/jquery.uploadify.min.js" type="text/javascript"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo PLEX_PLUGIN_DIR ?>assets/css/uploadify.css">
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    <?php $timestamp = time();?>
+    $(function() {
+        $('#file_upload').uploadify({
+            swf : '<?php echo PLEX_PLUGIN_DIR ?>uploadify.swf',
+            uploader: '<?php echo PLEX_PLUGIN_DIR ?>uploadify.php',
+            onUploadSuccess: function(file, data, response) {
+                var result = JSON.parse( data );
+
+                $("#imagePreviewContainer").html( '<img src="<?php echo PLEX_PLUGIN_DIR ?>uploads/' + result.fileName + '" width="158">' );
+
+            }
+        });
+    });
+</script>
+
+
+
+
 <?php
 }
 
@@ -161,10 +197,11 @@ function func_add_icon_admin($post){
 add_action('save_post', 'func_post_publish');
 function func_post_publish($postId) {
 
+
     if ( !wp_is_post_revision($postId) ) {
 
         $delete_image = $_POST['delete_image'];
-        $imageFile = $_FILES['upload_image'];
+        $imageFile = $_FILES['file_upload'];
         $newImageName = md5($postId).".".getImageExtension($imageFile['type']);
 
         $resizeResult = resizePostImage($imageFile, PLEX_UPLOAD_DIR, $newImageName, 330, 200); // 158x96
