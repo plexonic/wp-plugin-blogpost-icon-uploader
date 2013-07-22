@@ -18,7 +18,7 @@
 #post-image-preview-new img {
 }
 #delete-post-image {
-    position: absolute;imagePreviewContainer
+    position: absolute;
     top: -10px;
     right: -10px;
     width: 20px;
@@ -27,7 +27,7 @@
     z-index: 3;
 }
 #delete-post-image-new {
-    position: absolute;imagePreviewContainer
+    position: absolute;
     top: -10px;
     right: -10px;
     width: 20px;
@@ -41,4 +41,12 @@
 
 .hidden {
     display: none;
+}
+#loder_div{
+    width: 158px;
+    height: 96px;
+    position: absolute;
+    top: 0;
+    left: 0;
+   background-color: #fff;
 }

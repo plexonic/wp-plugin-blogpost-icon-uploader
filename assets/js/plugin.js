@@ -26,17 +26,3 @@ undoButton.addEventListener("click", function( e ) {
     e.preventDefault();
 }, false);
 
-
-
-
-var deleteButton_new = document.querySelector("#delete-post-image-new");
-var undoButton_new = document.querySelector("#post-image-undo-link-new");
-
-deleteButton_new.addEventListener("click", function( e ) {
-//    document.querySelector("#post-image-preview-new").className = "hidden";
-//    document.querySelector("#post-image-undo-new").className = "";
-//
-//    document.querySelector("#delete-image-flag").value = "on";
-//    e.preventDefault();
-    alert('ssxcscxs');
-});

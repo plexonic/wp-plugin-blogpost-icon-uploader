@@ -15,7 +15,7 @@ function func_add_icon_admin(){
     <link rel="stylesheet" type="text/css" href="<?php echo PLEX_PLUGIN_DIR ?>uploadify.css">
 
     <div id="queue"></div>
-    <input id="file_upload" name="file_upload" type="file" multiple="true">
+    <input id="file_upload" name="file_upload" type="file" >
 
 
     <div id="imagePreviewContainer"></div>
