@@ -104,10 +104,6 @@ function func_add_icon_admin($post){
 
                     $("#imagePreviewContainer").html( '<div id="post-image-preview-new"><a id="delete-post-image-new" href="#delete-post-image"></a><img id="plug_img_new" class="plug_img_new" src="<?php echo PLEX_PLUGIN_DIR ?>uploads/' + result.fileName + '" width="158"></div>' );
 
-
-//                $('#plug_img_new').beforeLoad.html();
-
-
                     $('#divImgName').html('<input name="inputImgName" type="hidden" value="' + result.fileName + '" />');
                     $('#post-image-preview').hide();
 
@@ -164,26 +160,25 @@ function func_post_publish($postId) {
 
 
 
-        $resizeResult = rename($path.$imgTenpName, PLEX_UPLOAD_DIR.'/'.$newImageName);
+        if($imgTenpName !== null){
+            $resizeResult = rename($path.$imgTenpName, PLEX_UPLOAD_DIR.'/'.$newImageName);
 
 
 
-
-
-
-        if ( $resizeResult ) {
-            if ( get_post_meta($postId, 'post_image', true) === null ) {
-                add_post_meta($postId, 'post_image', $newImageName);
-
+            if ( $resizeResult ) {
+                if ( get_post_meta($postId, 'post_image', true) === null ) {
+                    add_post_meta($postId, 'post_image', $newImageName);
+                }
+                else {
+                    update_post_meta($postId, 'post_image', $newImageName);
+                }
             }
-            else {
-                update_post_meta($postId, 'post_image', $newImageName);
+
+            if ($delete_image === 'on'){
+                func_delete($postId);
             }
         }
 
-        if ($delete_image === 'on'){
-            func_delete($postId);
-        }
     }
 
 }
