@@ -3,8 +3,8 @@
 $targetFolder = '/uploads'; // Relative to the root
 
 function resizePostImage($file, $destinationFolder, $fileName, $width, $height, $rgb = 0xFFFFFF, $quality = 100){
-    $src = $file;
 
+    $src = $file;
     if (!file_exists($src))
         return false;
 
@@ -98,19 +98,13 @@ function getImageExtension( $type )
     }
 }
 
-
-
-
 if (!empty($_FILES)) {
-
-
-
 	$tempFile = $_FILES['Filedata']['tmp_name'];
     $imgFileName = $_FILES['Filedata']['name'];
     $arrayFileName = explode(".", $imgFileName);
     $numb = count($arrayFileName) - 1;
     $endOfImgFileName = $arrayFileName[$numb];
-    $origFileName = '1'.'.'.$endOfImgFileName;
+    $origFileName = '1.jpg';
 	$targetPath = __DIR__ . $targetFolder;
 	$targetFile = rtrim($targetPath,'/') . '/' . $origFileName;
 
@@ -120,13 +114,10 @@ if (!empty($_FILES)) {
 
     $returnResult = array();
 
-
 	if ( isset($fileParts['extension']) && in_array($fileParts['extension'], $fileTypes))
     {
 
         $uploadResult = resizePostImage($tempFile, $targetPath, $origFileName, 330, 200); // 158x96
-
-
 
         if ( $uploadResult )
         {
