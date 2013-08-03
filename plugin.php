@@ -43,13 +43,6 @@ function func_add_icon_admin($post){
                         <img class="plug_img" src="<?php echo PLEX_UPLOAD_URL.'/'.$postImageName; ?>" width="158" />
                     </div>
 
-<!--                    <div id="post-image-undo" class="hidden">-->
-<!--                        <a id="post-image-undo-link" href="#">Undo delete</a>-->
-<!--                    </div>-->
-
-<!--                    <div id="post-image-undo-new" class="hidden">-->
-<!--                        <a id="post-image-undo-link-new" href="#">Undo delete</a>-->
-<!--                    </div>-->
 
                 <?php endif; ?>
 
@@ -81,20 +74,18 @@ function func_add_icon_admin($post){
                     $('#post-image-preview').hide();
 
                     var deleteButton_new = document.querySelector("#delete-post-image-new");
-//                    var undoButton_new = document.querySelector("#post-image-undo-link-new");
+
 
                     deleteButton_new.addEventListener("click", function( e ) {
                         document.querySelector("#post-image-preview-new").className = "hidden";
-                        document.querySelector("#post-image-undo-new").className = "";
+                        //document.querySelector("#post-image-undo-new").className = "";
 
-                        document.querySelector("#delete-image-flag").value = "on";
+                        document.querySelector("#delete_flag_new").value = "on";
                         e.preventDefault();
 
                     });
                     undoButton_new.addEventListener("click", function( e ) {
                         document.querySelector("#post-image-preview-new").className = "";
-//                        document.querySelector("#post-image-undo-new").className = "hidden";
-
 
                         document.querySelector("#delete-image-flag-new").value = "";
                         e.preventDefault();
@@ -120,6 +111,7 @@ function func_post_publish($postId) {
     if ( !wp_is_post_revision($postId) ) {
 
         $imgTenpName = $_POST['inputImgName'];
+        $delete_flag_new = $_POST['delete_flag_new'];
         $arrFileName = explode(".", $imgTenpName);
         $num = count($arrFileName) - 1;
         $endName = $arrFileName[$num];
@@ -130,7 +122,7 @@ function func_post_publish($postId) {
 
 
 
-        if( ($imgTenpName !== null) ){
+        if( ($imgTenpName !== null && $delete_flag_new !== 'on' ) ){
          $resizeResult = rename($path.$imgTenpName, PLEX_UPLOAD_DIR.'/'.$newImageName);
         }
 
