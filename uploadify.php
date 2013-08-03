@@ -48,10 +48,6 @@ function resizePostImage($file, $destinationFolder, $fileName, $width, $height, 
 
     imagecopyresampled($idest, $isrc, $new_left, $new_top, 0, 0, $new_width, $new_height, $size[0], $size[1]);
 
-    if ( !is_dir($destinationFolder) ) {
-        mkdir($destinationFolder, 0775);
-    }
-
     getResultImage($idest, $destinationFolder."/".$fileName, $size['mime']);
 
     imagedestroy($isrc);
@@ -99,14 +95,17 @@ function getImageExtension( $type )
 }
 
 if (!empty($_FILES)) {
-	$tempFile = $_FILES['Filedata']['tmp_name'];
+    $tempFile = $_FILES['Filedata']['tmp_name'];
     $imgFileName = $_FILES['Filedata']['name'];
     $arrayFileName = explode(".", $imgFileName);
     $numb = count($arrayFileName) - 1;
     $endOfImgFileName = $arrayFileName[$numb];
     $origFileName = '1.jpg';
-	$targetPath = __DIR__ . $targetFolder;
-	$targetFile = rtrim($targetPath,'/') . '/' . $origFileName;
+	$targetPath = "uploads";
+
+    if ( !is_dir($targetPath) ) {
+        mkdir($targetPath, 0775);
+    }
 
     // Validate the file type
 	$fileTypes = array('jpg','jpeg','gif','png'); // File extensions

@@ -7,9 +7,12 @@
  */
 
 var deleteButton = document.querySelector("#delete-post-image");
-var selectImg = document.querySelector("#file_upload");
-deleteButton.addEventListener("click", function( e ) {
-    document.querySelector("#post-image-preview").className = "hidden";
-    document.querySelector("#delete-image-flag").value = "on";
-    e.preventDefault();
-}, false);
+
+if ( deleteButton ) {
+    deleteButton.addEventListener("click", function( e ) {
+        document.querySelector("#post-image-preview").className = "hidden";
+        document.querySelector("#delete-image-flag").value = "on";
+        e.preventDefault();
+    }, false);
+}
+

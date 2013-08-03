@@ -9,7 +9,8 @@ Author URI: http://www.plexonic.com
 */
 
 
-define('PLEX_PLUGIN_DIR', plugin_dir_url(__FILE__));
+define('PLEX_PLUGIN_URL', plugin_dir_url(__FILE__));
+define('PLEX_PLUGIN_DIR', plugin_dir_path(__FILE__));
 $uploadDir = wp_upload_dir();
 define('PLEX_UPLOAD_DIR', $uploadDir['basedir']."/post-images");
 define('PLEX_UPLOAD_URL', $uploadDir['baseurl']."/post-images");
@@ -26,7 +27,7 @@ add_action('edit_form_advanced', 'func_add_icon_admin');
 function func_add_icon_admin($post){
     $postImageName = get_post_meta($post->ID, 'post_image', true);
     ?>
-    <link rel="stylesheet" type="text/css" href="<?php echo PLEX_PLUGIN_DIR ?>assets/css/plugin.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo PLEX_PLUGIN_URL ?>assets/css/plugin.css" />
 
     <div id="post-image-sortables" class="meta-box-sortables ui-sortable">
         <div class="postbox">
@@ -55,21 +56,21 @@ function func_add_icon_admin($post){
         </div>
     </div>
 
-    <script type="text/javascript" src="<?php echo PLEX_PLUGIN_DIR ?>assets/js/plugin.js"></script>
+    <script type="text/javascript" src="<?php echo PLEX_PLUGIN_URL ?>assets/js/plugin.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <script src="<?php echo PLEX_PLUGIN_DIR ?>assets/js/jquery.uploadify.min.js" type="text/javascript"></script>
-    <link rel="stylesheet" type="text/css" href="<?php echo PLEX_PLUGIN_DIR ?>assets/css/uploadify.css">
+    <script src="<?php echo PLEX_PLUGIN_URL ?>assets/js/jquery.uploadify.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" href="<?php echo PLEX_PLUGIN_URL ?>assets/css/uploadify.css">
 
     <script type="text/javascript">
         <?php $timestamp = time();?>
         $(function() {
             $('#file_upload').uploadify({
-                swf : '<?php echo PLEX_PLUGIN_DIR ?>uploadify.swf',
-                uploader: '<?php echo PLEX_PLUGIN_DIR ?>uploadify.php',
+                swf : '<?php echo PLEX_PLUGIN_URL ?>uploadify.swf',
+                uploader: '<?php echo PLEX_PLUGIN_URL ?>uploadify.php',
                 onUploadSuccess: function(file, data, response) {
                     var result = JSON.parse( data );
 
-                    $("#imagePreviewContainer").html( '<div id="post-image-preview-new"><a id="delete-post-image-new" href="#delete-post-image"></a><img id="plug_img_new" class="plug_img_new" src="<?php echo PLEX_PLUGIN_DIR ?>uploads/' + result.fileName + '" width="158"></div>' );
+                    $("#imagePreviewContainer").html( '<div id="post-image-preview-new"><a id="delete-post-image-new" href="#delete-post-image"></a><img id="plug_img_new" class="plug_img_new" src="<?php echo PLEX_PLUGIN_URL ?>uploads/' + result.fileName + '" width="158"></div>' );
                     $('#divImgName').html('<input name="inputImgName" type="hidden" value="' + result.fileName + '" />');
                     $('#post-image-preview').hide();
 
@@ -78,23 +79,13 @@ function func_add_icon_admin($post){
 
                     deleteButton_new.addEventListener("click", function( e ) {
                         document.querySelector("#post-image-preview-new").className = "hidden";
-                        //document.querySelector("#post-image-undo-new").className = "";
-
                         document.querySelector("#delete_flag_new").value = "on";
                         e.preventDefault();
 
                     });
-                    undoButton_new.addEventListener("click", function( e ) {
-                        document.querySelector("#post-image-preview-new").className = "";
-
-                        document.querySelector("#delete-image-flag-new").value = "";
-                        e.preventDefault();
-
-                    }, false);
-
                 },
                 'onUploadStart': function(file){
-                    $('#post-image-preview-new').append('<div id="loder_div" ><img style="position: absolute; top: 32px; left: 64px;" src="<?php echo PLEX_PLUGIN_DIR; ?>assets/img/loading.gif" ></div>');
+                    $('#post-image-preview-new').append('<div id="loder_div" ><img style="position: absolute; top: 32px; left: 64px;" src="<?php echo PLEX_PLUGIN_URL; ?>assets/img/loading.gif" ></div>');
                 },
                 multi: false
             });
@@ -107,23 +98,17 @@ function func_add_icon_admin($post){
 
 add_action('save_post', 'func_post_publish');
 function func_post_publish($postId) {
-    $postImageName = get_post_meta($post->ID, 'post_image', true);
     if ( !wp_is_post_revision($postId) ) {
 
-        $imgTenpName = $_POST['inputImgName'];
+        $resizeResult = false;
+        $imgTempName = $_POST['inputImgName'];
         $delete_flag_new = $_POST['delete_flag_new'];
-        $arrFileName = explode(".", $imgTenpName);
-        $num = count($arrFileName) - 1;
-        $endName = $arrFileName[$num];
         $delete_image = $_POST['delete_image'];
-        $path = __DIR__ . '/uploads/';
-        $tempFile = $path.$imgTenpName;
+        $path = PLEX_PLUGIN_DIR. 'uploads/';
         $newImageName = md5($postId).".jpg";
 
-
-
-        if( ($imgTenpName !== null && $delete_flag_new !== 'on' ) ){
-         $resizeResult = rename($path.$imgTenpName, PLEX_UPLOAD_DIR.'/'.$newImageName);
+        if( ($imgTempName !== null && $delete_flag_new !== 'on' ) ){
+            $resizeResult = rename($path.$imgTempName, PLEX_UPLOAD_DIR.'/'.$newImageName);
         }
 
         if ( $resizeResult ) {
