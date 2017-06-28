@@ -57,7 +57,7 @@ function func_add_icon_admin($post){
     </div>
 
     <script type="text/javascript" src="<?php echo PLEX_PLUGIN_URL ?>assets/js/plugin.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script src="<?php echo PLEX_PLUGIN_URL ?>assets/js/jquery.uploadify.min.js" type="text/javascript"></script>
     <link rel="stylesheet" type="text/css" href="<?php echo PLEX_PLUGIN_URL ?>assets/css/uploadify.css">
 
@@ -78,8 +78,8 @@ function func_add_icon_admin($post){
 
 
                     deleteButton_new.addEventListener("click", function( e ) {
-                        document.querySelector("#post-image-preview-new").className = "hidden";
-                        document.querySelector("#delete_flag_new").value = "on";
+                        $("#post-image-preview-new").addClass("hidden");
+                        $("#delete_flag_new").val("on");
                         e.preventDefault();
 
                     });
@@ -112,11 +112,12 @@ function func_post_publish($postId) {
         }
 
         if ( $resizeResult ) {
+        	$postImageName = $newImageName.'?r='.rand();
             if ( get_post_meta($postId, 'post_image', true) === null ) {
-                add_post_meta($postId, 'post_image', $newImageName);
+                add_post_meta($postId, 'post_image', $postImageName);
             }
             else {
-                update_post_meta($postId, 'post_image', $newImageName);
+                update_post_meta($postId, 'post_image', $postImageName);
             }
         }
         if ($delete_image === 'on'){
@@ -130,6 +131,8 @@ function func_delete($postId){
     $postImageName = get_post_meta($postId, 'post_image', true);
 
     if ( !wp_is_post_revision($postId) && !empty($postImageName) ){
+    	$postImageParts = explode('?', $postImageName);
+        $postImageName = $postImageParts[0];
         unlink(PLEX_UPLOAD_DIR.'/'.$postImageName);
         delete_post_meta($postId, 'post_image');
     }

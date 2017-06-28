@@ -100,7 +100,7 @@ if (!empty($_FILES)) {
     $arrayFileName = explode(".", $imgFileName);
     $numb = count($arrayFileName) - 1;
     $endOfImgFileName = $arrayFileName[$numb];
-    $origFileName = '1.jpg';
+    $origFileName = rand() . '.jpg';
 	$targetPath = "uploads";
 
     if ( !is_dir($targetPath) ) {
